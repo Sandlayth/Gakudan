@@ -1,0 +1,12 @@
+---
+ - hosts: db
+   roles:
+       - db
+
+ - hosts: master
+   roles:
+       - master
+
+ - hosts: worker
+   roles:
+       - worker
