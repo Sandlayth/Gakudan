@@ -1,0 +1,10 @@
+[master]
+shachou
+
+[worker]
+tomodachi
+nakama
+
+[db]
+kanshiin
+
