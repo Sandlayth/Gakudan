@@ -1,0 +1,10 @@
+---
+- name: Add MySQL 8 debian stretch repository
+  apt_repository:
+    repo: "deb http://repo.mysql.com/apt/debian stretch mysql-8.0"
+    state: present
+- name: Start the MySQL service
+  service:
+    name: mysql
+    state: started
+    enabled: true
