@@ -1,0 +1,31 @@
+- name: Check if Kubernetes has already been initialized.
+  stat:
+    path: /etc/kubernetes/admin.conf
+  register: kubernetes_init_stat
+
+- name: Initialize the Kubernetes cluster using kubeadm
+  command: kubeadm init --apiserver-advertise-address="10.64.246.129" --apiserver-cert-extra-sans="10.64.246.129" --node-name shachou
+  when: not kubernetes_init_stat.stat.exists
+
+- name: Create kubeconfig directory for root user
+  file:
+    path: /home/root/.kube
+    state: directory
+
+- name: Symlink the kubectl admin.conf to ~/.kube/conf.
+  file:
+    src: /etc/kubernetes/admin.conf
+    dest: ~/.kube/config
+    state: link
+  environment:
+    KUBECONFIG: ~/.kube/config
+
+- name: Install calico pod network
+  shell: "kubectl create -f https://docs.projectcalico.org/v3.10/getting-started/kubernetes/installation/hosted/calico.yaml --dry-run -o yaml | kubectl apply -f -"
+
+- name: Generate join command
+  command: kubeadm token create --print-join-command
+  register: join_command
+
+- name: Copy join command to local file
+  local_action: copy content="{{ join_command.stdout_lines[0] }}" dest="./join-command"
