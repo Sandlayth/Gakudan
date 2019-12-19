@@ -5,8 +5,10 @@
 
  - hosts: master
    roles:
+       - cluster
        - master
 
  - hosts: worker
    roles:
+       - cluster
        - worker
